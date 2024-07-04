@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <dirent.h>
 #include <ctype.h>
+#include <sys/types.h>
 
 //自定义一个pid结构体，用于存储pid, ppid, name, cpids
 typedef struct
