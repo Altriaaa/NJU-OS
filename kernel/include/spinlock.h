@@ -1,14 +1,15 @@
 #include <am.h>
 #include <klib.h>
 
-#ifndef KERNEL_H__
-#define KERNEL_H__
-struct cpu {
+// #ifndef KERNEL_H__
+// #define KERNEL_H__
+
+typedef struct cpu {
     int noff;
     int intena;
-};
+} cpu;
 
-extern struct cpu cpus[];
+extern cpu cpus[];
 #define mycpu (&cpus[cpu_current()])
 
 #define panic_(...) \
@@ -17,23 +18,23 @@ extern struct cpu cpus[];
         halt(1); \
     } while (0)
 
-#endif
-
 #define UNLOCKED  0
 #define LOCKED    1
 
 typedef struct {
     const char *name;
     int status;
-    struct cpu *cpu;
-} spinlock_t;
+    cpu *cpu;
+} spinlock_xv6;
+
+// #endif
 
 #define spin_init(name_) \
-    ((spinlock_t) { \
+    ((spinlock_xv6) { \
         .name = name_, \
         .status = UNLOCKED, \
         .cpu = NULL, \
     })
-void spin_lock(spinlock_t *lk);
-void spin_unlock(spinlock_t *lk);
+void spin_lock(spinlock_xv6 *lk);
+void spin_unlock(spinlock_xv6 *lk);
 

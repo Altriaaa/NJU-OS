@@ -5,17 +5,17 @@
 // from xv6-riscv to AbstractMachine:
 // https://github.com/mit-pdos/xv6-riscv
 
-void push_off();
-void pop_off();
-bool holding(spinlock_t *lk);
+void push_off_xv6();
+void pop_off_xv6();
+bool holding_xv6(spinlock_xv6 *lk);
 
-void spin_lock(spinlock_t *lk) {
+void spin_lock(spinlock_xv6 *lk) {
     // printf("cpu %d acquiring %s\n", cpu_current(), lk->name);
     // Disable interrupts to avoid deadlock.
-    push_off();
+    push_off_xv6();
 
     // This is a deadlock.
-    if (holding(lk)) {
+    if (holding_xv6(lk)) {
         panic_("acquire %s", lk->name);
     }
 
@@ -29,36 +29,36 @@ void spin_lock(spinlock_t *lk) {
     // printf("cpu %d acquired %s\n", cpu_current(), lk->name);
 }
 
-void spin_unlock(spinlock_t *lk) {
-    if (!holding(lk)) {
+void spin_unlock(spinlock_xv6 *lk) {
+    if (!holding_xv6(lk)) {
         panic_("release %s", lk->name);
     }
 
     lk->cpu = NULL;
     atomic_xchg(&lk->status, UNLOCKED);
 
-    pop_off();
+    pop_off_xv6();
     // printf("cpu %d released %s\n", cpu_current(), lk->name);
     // sleep(1);
 }
 
-// Check whether this cpu is holding the lock.
+// Check whether this cpu is holding_xv6 the lock.
 // Interrupts must be off.
-bool holding(spinlock_t *lk) {
+bool holding_xv6(spinlock_xv6 *lk) {
     return (
         lk->status == LOCKED &&
         lk->cpu == &cpus[cpu_current()]
     );
 }
 
-// push_off/pop_off are like intr_off()/intr_on()
+// push_off_xv6/pop_off_xv6 are like intr_off()/intr_on()
 // except that they are matched:
-// it takes two pop_off()s to undo two push_off()s.
+// it takes two pop_off_xv6()s to undo two push_off_xv6()s.
 // Also, if interrupts are initially off, then
-// push_off, pop_off leaves them off.
-void push_off(void) {
+// push_off_xv6, pop_off_xv6 leaves them off.
+void push_off_xv6(void) {
     int old = ienabled();
-    struct cpu *c = mycpu;
+    cpu *c = mycpu;
 
     iset(false);
     if (c->noff == 0) {
@@ -67,16 +67,16 @@ void push_off(void) {
     c->noff += 1;
 }
 
-void pop_off(void) {
-    struct cpu *c = mycpu;
+void pop_off_xv6(void) {
+    cpu *c = mycpu;
 
-    // Never enable interrupt when holding a lock.
+    // Never enable interrupt when holding_xv6 a lock.
     if (ienabled()) {
-        panic_("pop_off - interruptible");
+        panic_("pop_off_xv6 - interruptible");
     }
     
     if (c->noff < 1) {
-        panic_("pop_off");
+        panic_("pop_off_xv6");
     }
 
     c->noff -= 1;

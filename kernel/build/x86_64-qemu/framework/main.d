@@ -4,4 +4,5 @@
  /home/kali/OS/Lab/os-workbench/kernel/../abstract-machine/am/include/am.h \
  /home/kali/OS/Lab/os-workbench/kernel/../abstract-machine/am/include/arch/x86_64-qemu.h \
  /home/kali/OS/Lab/os-workbench/kernel/../abstract-machine/am/include/amdev.h \
- /home/kali/OS/Lab/os-workbench/kernel/../abstract-machine/klib/include/klib.h
+ /home/kali/OS/Lab/os-workbench/kernel/../abstract-machine/klib/include/klib.h \
+ include/os.h

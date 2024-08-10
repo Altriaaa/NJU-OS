@@ -3,7 +3,7 @@
 
 #define NCPU 8
 #define PAGE_SIZE (64 << 10)
-struct cpu cpus[NCPU];
+cpu cpus[NCPU];
 
 //page中的内存单元的结构体,每个内存单元的大小是2的幂次方
 typedef struct pagenode
@@ -32,11 +32,11 @@ typedef struct pagelist
     page* pages_1024B;
     page* pages_2048B;
     page* pages_4096B;
-    spinlock_t lock;
+    spinlock_xv6 lock;
 } pagelist;
 
 pagelist cpu_pagelist[NCPU]; //最多8个CPU
-spinlock_t global_lock;
+spinlock_xv6 global_lock;
 page* global_page_list = NULL;
 
 void init_page(page* p, int size)
@@ -422,6 +422,25 @@ static void pmm_init() {
     }
     // printf("pmm initialized\n");
 }
+
+// //中断安全的内存分配
+// static void* kalloc_int(size_t size)
+// {
+//     bool i = ienabled();
+//     iset(false);    //关闭中断
+//     void* addr = kalloc(size);
+//     iset(i);        //恢复中断
+//     return addr;
+// }
+
+// //中断安全的内存释放
+// static void kfree_int(void* ptr)
+// {
+//     bool i = ienabled();
+//     iset(false);
+//     kfree(ptr);
+//     iset(i);
+// }
 
 MODULE_DEF(pmm) = {
     .init  = pmm_init,
